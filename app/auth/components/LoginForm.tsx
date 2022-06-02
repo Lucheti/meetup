@@ -1,8 +1,9 @@
-import { AuthenticationError, Link, useMutation, Routes, PromiseReturnType } from "blitz"
+import { AuthenticationError, Link, PromiseReturnType, Routes, useMutation } from "blitz"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
 import { Form, FORM_ERROR } from "app/core/components/Form"
 import login from "app/auth/mutations/login"
 import { Login } from "app/auth/validations"
+import { Card, Text } from "@nextui-org/react"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
@@ -12,9 +13,17 @@ export const LoginForm = (props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
 
   return (
-    <div>
-      <h1>Login</h1>
-
+    <Card>
+      <Text
+        h1
+        size={60}
+        css={{
+          textGradient: "45deg, $blue600 -20%, $pink600 50%",
+        }}
+        weight="bold"
+      >
+        Login
+      </Text>
       <Form
         submitText="Login"
         schema={Login}
@@ -47,7 +56,7 @@ export const LoginForm = (props: LoginFormProps) => {
       <div style={{ marginTop: "1rem" }}>
         Or <Link href={Routes.SignupPage()}>Sign Up</Link>
       </div>
-    </div>
+    </Card>
   )
 }
 

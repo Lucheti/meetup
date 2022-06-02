@@ -1,4 +1,5 @@
 import { Head, BlitzLayout } from "blitz"
+import { Container } from "@nextui-org/react"
 
 const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
   title,
