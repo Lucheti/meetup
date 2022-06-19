@@ -12,6 +12,12 @@ generator client {
 
 // --------------------------------------
 
+enum Sex {
+  Male
+  Female
+  Other
+}
+
 model User {
   id             String   @id @default(uuid())
   createdAt      DateTime @default(now())
@@ -22,10 +28,47 @@ model User {
   role           String   @default("USER")
   emailVerified  Boolean  @default(false)
 
-  tokens        Token[]
-  sessions      Session[]
-  createdEvents Event[]   @relation("user_owned_events") // // "user_owned_events" is a { 1 -> n } realation
-  joinedEvents  Event[]   @relation("event_participants") // "event_participants" is a { n -> m } realation
+  sex Sex
+
+  tokens   Token[]
+  sessions Session[]
+
+  createdEvents Event[] @relation("user_owned_events") // // "user_owned_events" is a { 1 -> n } realation
+  joinedEvents  Event[] @relation("event_participants") // "event_participants" is a { n -> m } realation
+
+  followers Follower[] @relation("followers")
+  followees Follower[] @relation("followees")
+
+  images Images?
+}
+
+model Images {
+  id String @id @default(uuid())
+
+  url_small  String
+  url_medium String
+  url_large  String
+
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  //  event   Event  @relation(fields: [eventId], references: [id])
+  //  eventId String @unique
+}
+
+model Follower {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  follower   User   @relation("followers", fields: [followerId], references: [id])
+  followerId String
+
+  followee   User   @relation("followees", fields: [followeeId], references: [id])
+  followeeId String
+
+  @@unique([followerId, followeeId])
 }
 
 model Session {
@@ -76,7 +119,10 @@ model Event {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name      String
+
+  name     String
+  date     DateTime
+  capacity Int?
 
   visibility EventVisibility @default(Public)
 
@@ -84,4 +130,20 @@ model Event {
   ownerId String
 
   participants User[] @relation("event_participants")
+
+  location Location?
+  //  images   Images?
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  latitude  Float
+  longitude Float
+  alias     String
+
+  Event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId String @unique
 }

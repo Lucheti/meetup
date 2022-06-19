@@ -1,23 +1,22 @@
 import { resolver } from "blitz"
 import db from "db"
 import { Role } from "types"
-import { z } from "zod"
-import confirmationEmailQueue from "../../api/signup-confirmation"
+import confirmationEmailQueue from "../../api/mailing/signup-confirmation"
 
-const UserId = z.string()
-
-export default resolver.pipe(resolver.zod(UserId), async (userId, ctx) => {
+export default resolver.pipe(resolver.authorize(), async (_, ctx) => {
   const user = await db.user.update({
-    where: { id: userId },
+    where: { id: ctx.session.userId },
     data: { emailVerified: true },
+    include: { images: true },
   })
 
-  confirmationEmailQueue.enqueue(user.id).then((job) => console.log(`JOB: ${job.body}`))
+  confirmationEmailQueue.enqueue(user.id)
 
   await ctx.session.$create({
     userId: user.id,
     role: user.role as Role,
     verified: user.emailVerified,
+    images: user.images,
   })
   return user
 })

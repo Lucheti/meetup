@@ -1,38 +1,37 @@
 import { invalidateQuery, useMutation, useParams } from "blitz"
-import { Card, Container, Row, Text } from "@nextui-org/react"
 import verifyAccountMutation from "../../mutations/verifyAccount"
 import { useEffect } from "react"
 import getCurrentUser from "../../../users/queries/getCurrentUser"
 import Layout from "../../../core/layouts/Layout"
+import { Text } from "@mantine/core"
 
 const VerifyAccount = () => {
-  const { userId } = useParams("string")
   const [verifyAccount] = useMutation(verifyAccountMutation)
 
   useEffect(() => {
-    if (userId) {
-      verifyAccount(userId).then(() => invalidateQuery(getCurrentUser))
-    }
-  }, [userId])
+    verifyAccount().then(() => invalidateQuery(getCurrentUser))
+  }, [])
 
   return (
-    <Container
-      css={{
-        minHeight: "100vh",
-        linearGradient: "45deg, $blue600 -20%, $pink600 50%",
-      }}
-      display={"flex"}
-      xl
-    >
-      <Row justify="center" align="center">
-        <Container display={"flex"}>
-          <Card>
-            <Text h4>Your account has been verified!</Text>
-            <Text>Go to the login page to log in.</Text>
-          </Card>
-        </Container>
-      </Row>
-    </Container>
+    // <Container
+    //   css={{
+    //     minHeight: "100vh",
+    //     linearGradient: "45deg, $blue600 -20%, $pink600 50%",
+    //   }}
+    //   display={"flex"}
+    //   xl
+    // >
+    //   <Row justify="center" align="center">
+    //     <Container display={"flex"}>
+    //       <Card>
+    <div>
+      <Text>Your account has been verified!</Text>
+      <Text>Go to the login page to log in.</Text>
+    </div>
+    //       </Card>
+    //     </Container>
+    //   </Row>
+    // </Container>
   )
 }
 

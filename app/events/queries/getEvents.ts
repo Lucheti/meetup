@@ -10,10 +10,16 @@ export default resolver.pipe(
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const userId = ctx.session.userId
 
-    where = {
-      ...where,
-      OR: [{ visibility: EventVisibility.Public }, { participants: { some: { id: userId } } }],
-    }
+    where = where || {}
+    const uiFilter = where.OR
+    const enforcedFilter = [
+      { visibility: EventVisibility.Public },
+      { participants: { some: { id: userId } } },
+    ]
+
+    where.AND = [{ OR: enforcedFilter }, { OR: uiFilter }, { date: { gte: new Date() } }]
+
+    console.log("WHERE", where)
 
     const {
       items: events,
@@ -32,6 +38,7 @@ export default resolver.pipe(
           include: {
             owner: true,
             participants: true,
+            location: true,
           },
         }),
     })

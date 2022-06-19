@@ -1,6 +1,11 @@
+import { createGetInitialProps } from "@mantine/next"
 import { Document, Html, DocumentHead, Main, BlitzScript /*DocumentContext*/ } from "blitz"
 
+const getInitialProps = createGetInitialProps()
+
 class MyDocument extends Document {
+  static getInitialProps = getInitialProps
+
   // Only uncomment if you need to customize this behaviour
   // static async getInitialProps(ctx: DocumentContext) {
   //   const initialProps = await Document.getInitialProps(ctx)

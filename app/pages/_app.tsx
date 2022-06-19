@@ -1,46 +1,52 @@
 import {
   AppProps,
-  ErrorBoundary,
-  ErrorComponent,
   AuthenticationError,
   AuthorizationError,
+  ErrorBoundary,
+  ErrorComponent,
   ErrorFallbackProps,
   useQueryErrorResetBoundary,
 } from "blitz"
-import LoginForm from "app/auth/components/LoginForm"
-import { createTheme, NextUIProvider } from "@nextui-org/react"
 import { Suspense } from "react"
+import { MantineProvider } from "@mantine/core"
+import { NotificationsProvider } from "@mantine/notifications"
+import LoginPage from "../auth/pages/login"
 
 export default function App({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
 
-  const theme = createTheme({
-    type: "light",
-    theme: {
-      fonts: {
-        sans: "DM Sans",
-      },
-      colors: {
-        gradientAlt: "linear-gradient(to right, #5d43cb, #4a00e0);",
-      },
-    },
-  })
-
   return (
-    <NextUIProvider theme={theme}>
-      <ErrorBoundary
-        FallbackComponent={RootErrorFallback}
-        onReset={useQueryErrorResetBoundary().reset}
-      >
-        <Suspense>{getLayout(<Component {...pageProps} />)}</Suspense>
-      </ErrorBoundary>
-    </NextUIProvider>
+    <MantineProvider
+      withGlobalStyles
+      withNormalizeCSS
+      theme={{
+        /** Put your mantine theme override here */
+        colorScheme: "dark",
+      }}
+      defaultProps={{
+        Container: {
+          sizes: {
+            lg: 1000,
+            xl: 1450,
+          },
+        },
+      }}
+    >
+      <NotificationsProvider>
+        <ErrorBoundary
+          FallbackComponent={RootErrorFallback}
+          onReset={useQueryErrorResetBoundary().reset}
+        >
+          <Suspense>{getLayout(<Component {...pageProps} />)}</Suspense>
+        </ErrorBoundary>
+      </NotificationsProvider>
+    </MantineProvider>
   )
 }
 
 function RootErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
-    return <LoginForm onSuccess={resetErrorBoundary} />
+    return <LoginPage />
   } else if (error instanceof AuthorizationError) {
     return (
       <ErrorComponent

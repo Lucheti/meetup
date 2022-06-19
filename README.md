@@ -89,7 +89,7 @@ meetup
 │   ├── core/
 │   │   ├── components/
 │   │   │   ├── Form.tsx
-│   │   │   └── LabeledTextField.tsx
+│   │   │   └── LabeledInput.tsx
 │   │   ├── hooks/
 │   │   │   └── useCurrentUser.ts
 │   │   └── layouts/

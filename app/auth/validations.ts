@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { Sex } from "db"
 
 export const email = z
   .string()
@@ -20,6 +21,7 @@ export const Signup = z.object({
   email,
   password,
   name,
+  sex: z.enum([Sex.Male, Sex.Female, Sex.Other]),
 })
 
 export const Login = z.object({

@@ -1,18 +1,45 @@
 import { useRouter, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import { SignupForm } from "app/auth/components/SignupForm"
+import { Anchor, Center, Container, Paper, Text, Title } from "@mantine/core"
+import { LoginForm } from "../components/LoginForm"
+import React from "react"
 
 const SignupPage: BlitzPage = () => {
   const router = useRouter()
 
   return (
     <div>
-      <SignupForm onSuccess={() => router.push(Routes.CheckEmail())} />
+      <Center style={{ height: "100vh" }}>
+        <Container size={500}>
+          <Title
+            align="center"
+            sx={(theme) => ({ fontFamily: `Greycliff CF, ${theme.fontFamily}`, fontWeight: 900 })}
+          >
+            Let{"'"}s get you started!
+          </Title>
+          <Text color="dimmed" size="sm" align="center" mt={5}>
+            Already have an account?{" "}
+            <Anchor<"a">
+              size="sm"
+              onClick={(event) => {
+                event.preventDefault()
+                router.push(Routes.LoginPage())
+              }}
+            >
+              Login
+            </Anchor>
+          </Text>
+
+          <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+            <SignupForm onSuccess={() => router.push(Routes.CheckEmail())} />
+          </Paper>
+        </Container>
+      </Center>
     </div>
   )
 }
 
 SignupPage.redirectAuthenticatedTo = "/"
-SignupPage.getLayout = (page) => <Layout title="Sign Up">{page}</Layout>
 
 export default SignupPage

@@ -1,57 +1,30 @@
 import { BlitzPage, usePaginatedQuery } from "blitz"
 import Layout from "app/core/layouts/Layout"
-import { Topbar } from "../core/components/topbar"
-import { Card, Col, Container, Grid, Spacer, Text } from "@nextui-org/react"
 import getEvents from "../events/queries/getEvents"
+import { NavigationBar } from "../core/components/navbar/Navbar"
+import { Container, Grid, Space } from "@mantine/core"
+import { EmailBanner } from "../core/components/home/EmailBanner"
+import { TopEvents } from "../events/components/TopEvents"
+import React from "react"
 import { EventsList } from "../events/components/EventsList"
-import { TopEventsTable } from "../events/components/TopEventsTable"
+// import { EventsList } from "../events/components/EventsList"
 
 const Home: BlitzPage = () => {
-  const [{ events, hasMore }] = usePaginatedQuery(getEvents, {
-    orderBy: { id: "asc" },
-  })
-
   return (
-    <div>
-      <Topbar />
+    <Container size={"xl"}>
+      <Grid gutter={"xl"}>
+        <Grid.Col xs={12} md={9} lg={9}>
+          <Space h={"lg"} />
+        </Grid.Col>
+        <Grid.Col xs={12} md={3} lg={3}>
+          <TopEvents />
+        </Grid.Col>
 
-      <Container xl>
-        <Grid.Container gap={3}>
-          <Grid xs={12} sm={7} md={7} lg={7}>
-            <Col>
-              {/*<HomeHeroCard/>*/}
-              <Spacer y={3} />
-              <Text h2 color={"$blue900"}>
-                {" "}
-                Featured events{" "}
-              </Text>
-              <EventsList />
-            </Col>
-          </Grid>
-
-          <Grid xs={12} sm={5} md={5} lg={5}>
-            <Col>
-              <Card css={{ p: 20, h: "fit-content" }}>
-                <Text h2 color={"$blue900"}>
-                  {" "}
-                  Top events{" "}
-                </Text>
-                <TopEventsTable />
-              </Card>
-              <Spacer y={2} />
-
-              <Card css={{ p: 20, h: "fit-content" }}>
-                <Text h2 color={"$blue900"}>
-                  {" "}
-                  Top events{" "}
-                </Text>
-                <TopEventsTable />
-              </Card>
-            </Col>
-          </Grid>
-        </Grid.Container>
-      </Container>
-    </div>
+        <Grid.Col span={12}>
+          <EmailBanner />
+        </Grid.Col>
+      </Grid>
+    </Container>
   )
 }
 
