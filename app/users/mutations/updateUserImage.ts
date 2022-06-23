@@ -8,7 +8,7 @@ export default resolver.pipe(
 
     await db.images.upsert({
       where: {
-        userId: ctx.session.userId,
+        id: ctx.session.userId,
       },
       create: {
         ...images,
