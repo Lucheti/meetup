@@ -3,9 +3,12 @@ import db from "db"
 import { Login } from "../validations"
 import { Role } from "types"
 
-export const authenticateUser = async (rawEmail: string, rawPassword: string) => {
-  const { email, password } = Login.parse({ email: rawEmail, password: rawPassword })
-  const user = await db.user.findFirst({ where: { email } })
+export const authenticateUser = async (rawIdentifier: string, rawPassword: string) => {
+  const { identifier, password } = Login.parse({ identifier: rawIdentifier, password: rawPassword })
+  const user = await db.user.findFirst({
+    where: { OR: [{ email: identifier }, { username: identifier }] },
+    include: { images: true },
+  })
   if (!user) throw new AuthenticationError()
 
   const result = await SecurePassword.verify(user.hashedPassword, password)
@@ -20,14 +23,16 @@ export const authenticateUser = async (rawEmail: string, rawPassword: string) =>
   return rest
 }
 
-export default resolver.pipe(resolver.zod(Login), async ({ email, password }, ctx) => {
+export default resolver.pipe(resolver.zod(Login), async ({ identifier, password }, ctx) => {
   // This throws an error if credentials are invalid
-  const user = await authenticateUser(email, password)
+  const user = await authenticateUser(identifier, password)
 
   await ctx.session.$create({
     userId: user.id,
     role: user.role as Role,
     verified: user.emailVerified,
+    images: user?.images,
+    username: user.username,
   })
 
   return user

@@ -22,15 +22,17 @@ export const EventsList = () => {
       OR: [
         { name: { contains: debouncedSearch, mode: "insensitive" } },
         { owner: { name: { contains: debouncedSearch, mode: "insensitive" } } },
+        { owner: { username: { contains: debouncedSearch, mode: "insensitive" } } },
       ],
     },
   })
 
   const goTo = (page: number) => router.push({ query: { page } })
   const totalPages = Math.ceil(count / ITEMS_PER_PAGE)
+  let content
 
   if (count === 0)
-    return (
+    content = (
       <EmptyPage
         code={"OOPS!"}
         title={"No events have been created yet."}
@@ -38,7 +40,23 @@ export const EventsList = () => {
         button={{ text: "Create an event", onClick: () => router.push(Routes.NewEventPage()) }}
       />
     )
+  else
+    content = (
+      <>
+        <Space h={"xl"} />
+        <Grid gutter={"xl"}>
+          {events.map((event) => (
+            <Grid.Col xs={12} sm={12} md={6} lg={4} key={event.id}>
+              <EventCard event={event} />
+            </Grid.Col>
+          ))}
+        </Grid>
 
+        <Group align={"center"} position={"center"} mt={"xl"}>
+          <Pagination page={page + 1} onChange={goTo} total={totalPages} />
+        </Group>
+      </>
+    )
   return (
     <div>
       <TextInput
@@ -49,18 +67,7 @@ export const EventsList = () => {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <Space h={"xl"} />
-      <Grid gutter={"xl"}>
-        {events.map((event) => (
-          <Grid.Col xs={12} sm={12} md={6} lg={4} key={event.id}>
-            <EventCard event={event} />
-          </Grid.Col>
-        ))}
-      </Grid>
-
-      <Group align={"center"} position={"center"} mt={"xl"}>
-        <Pagination page={page + 1} onChange={goTo} total={totalPages} />
-      </Group>
+      {content}
     </div>
   )
 }

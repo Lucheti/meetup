@@ -22,9 +22,10 @@ import { showNotification } from "@mantine/notifications"
 import leaveEventMutation from "../mutations/leaveEvent"
 import dayjs from "dayjs"
 import getEventsQuery from "../queries/getEvents"
+import getMyEvents from "../queries/getMyEvents"
 
 type EventCardProps = {
-  event: Event & { owner: User; participants: User[]; location: Location }
+  event: Event & { owner: User; participants: User[]; location: Location | null }
 }
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
@@ -34,9 +35,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     onSuccess: (data) => {
       invalidateQuery(isParticipantQuery)
       invalidateQuery(getEventsQuery)
+      invalidateQuery(getMyEvents)
       showNotification({
         title: `Joined event ${data.name}`,
-        message: "13 days left to assist!",
+        message: `See you in ${daysLeft} days!`,
       })
     },
   })
@@ -45,6 +47,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     onSuccess: (data) => {
       invalidateQuery(isParticipantQuery)
       invalidateQuery(getEventsQuery)
+      invalidateQuery(getMyEvents)
       showNotification({
         title: `Left event ${data.name}`,
         message: "We had to let you go",
@@ -56,7 +59,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const eventDate = dayjs(event.date).format("DD/MM/YYYY")
   const eventTime = dayjs(event.date).format("HH:MM")
   const daysLeft = dayjs(event?.date).diff(dayjs(Date.now()), "day")
-  const progress = (event?.capacity && (event.participants.length / event?.capacity) * 100) || 0
+  const progress = Math.round(
+    (event?.capacity && (event.participants.length / event?.capacity) * 100) || 0
+  )
   const progressColor = progress
     ? progress < 50
       ? theme.colors.blue[5]
@@ -66,7 +71,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     : undefined
 
   return (
-    <Card withBorder radius="xl" p="md" shadow={"sm"} className={classes.card}>
+    <Card withBorder radius="xl" p="md" shadow={"sm"}>
       <Card.Section p={"lg"}>
         <Image
           radius={"lg"}
@@ -98,7 +103,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
                 router.push(Routes.UserPage({ userId: event.owner.id }))
               }}
             >
-              {event.owner.name}
+              @{event.owner.username}
             </Anchor>
           </Text>
         </Group>
@@ -149,7 +154,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <LocationIcon color={"gray"} size={20} />
 
         <Text size="sm" color="dimmed" transform={"capitalize"}>
-          {event.location.alias}
+          {event?.location?.alias}
         </Text>
       </Group>
 

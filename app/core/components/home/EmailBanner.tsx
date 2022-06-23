@@ -8,7 +8,7 @@ export function EmailBanner() {
   return (
     <div className={classes.wrapper}>
       <div className={classes.body}>
-        <Title className={classes.title}>Wait a minute...</Title>
+        <Title className={classes.title}>Want to stay updated?</Title>
         <Text weight={500} size="lg" mb={5}>
           Subscribe to our newsletter!
         </Text>

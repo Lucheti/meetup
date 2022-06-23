@@ -24,6 +24,7 @@ const NewEventPage: BlitzPage = () => {
         // schema={CreateEvent}
         // initialValues={{}}
         onSubmit={async ({ date, time, location, coords, ...values }) => {
+          console.log(values)
           const combinedDate = dayjs(date)
             .set("hour", time.getHours())
             .set("minute", time.getMinutes())

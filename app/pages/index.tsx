@@ -7,23 +7,21 @@ import { EmailBanner } from "../core/components/home/EmailBanner"
 import { TopEvents } from "../events/components/TopEvents"
 import React from "react"
 import { EventsList } from "../events/components/EventsList"
+import { HeroTitle } from "../home/components/HeroTitle"
+import { FeaturesGrid } from "../home/components/AppFeatures"
 // import { EventsList } from "../events/components/EventsList"
 
 const Home: BlitzPage = () => {
   return (
     <Container size={"xl"}>
-      <Grid gutter={"xl"}>
-        <Grid.Col xs={12} md={9} lg={9}>
-          <Space h={"lg"} />
-        </Grid.Col>
-        <Grid.Col xs={12} md={3} lg={3}>
-          <TopEvents />
-        </Grid.Col>
-
-        <Grid.Col span={12}>
-          <EmailBanner />
-        </Grid.Col>
-      </Grid>
+      <HeroTitle />
+      <FeaturesGrid
+        title={"Create events like never before"}
+        description={
+          "With seamless event creation, you can create events in minutes. No more lengthy forms, no more long wait times. Sync your data with your customers and providers."
+        }
+      />
+      <EmailBanner />
     </Container>
   )
 }

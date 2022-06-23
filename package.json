@@ -39,6 +39,7 @@
     "blitz": "0.45.4",
     "dayjs": "1.11.3",
     "final-form": "4.20.7",
+    "next-s3-upload": "0.2.2",
     "node-fetch": "3.2.5",
     "pigeon-maps": "0.21.0",
     "quirrel": "1.9.0",

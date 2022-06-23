@@ -2,7 +2,7 @@ import { Routes, RouteUrlObject, useMutation } from "blitz"
 import { DefaultMantineColor } from "@mantine/core"
 import React from "react"
 import logoutMutation from "../../../auth/mutations/logout"
-import { CalendarEvent, Logout, Plus, User } from "tabler-icons-react"
+import { CalendarEvent, Logout, Plus, User, Users } from "tabler-icons-react"
 
 type HeaderItem = {
   label: string
@@ -38,6 +38,12 @@ export const useMenuItems = (): HeaderAction[] => {
           link: Routes.NewEventPage(),
           color: "gray",
           icon: <Plus size={16} />,
+        },
+        {
+          label: "My events",
+          link: Routes.MyEventsPage(),
+          color: "gray",
+          icon: <Users size={16} />,
         },
       ],
     },

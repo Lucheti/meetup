@@ -7,7 +7,7 @@ const user_id = "FOnrb0s5xyNIK6rEb"
 const accessToken = "GIYt2D8uceTKvf_09UKj5"
 
 export class EmailSender {
-  async send<T>(template_params: T, template_id: string) {
+  static async send<T>(template_params: T, template_id: string) {
     fetch(EMAIL_API_URL, {
       method: "POST",
       body: JSON.stringify({

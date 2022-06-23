@@ -15,6 +15,7 @@ declare module "blitz" {
       role: Role
       verified: User["emailVerified"]
       images: Images | null
+      username: string
     }
   }
 }

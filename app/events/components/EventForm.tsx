@@ -6,6 +6,8 @@ import { DatePicker, TimeInput } from "@mantine/dates"
 import { Calendar, Clock, Resize } from "tabler-icons-react"
 import { MapInput } from "../../core/components/inputs/MapInput"
 export { FORM_ERROR } from "app/core/components/Form"
+import { EventVisibility } from "db"
+import { EnumInput } from "../../core/components/inputs/EnumInput"
 
 export function EventForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
@@ -28,11 +30,11 @@ export function EventForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
             placeholder="When will this event happen?"
             required
             icon={<Calendar size={16} />}
-            InputComponent={DatePicker}
+            InputComponent={({ ...props }) => <DatePicker {...props} minDate={new Date()} />}
             fieldProps={{
               validate: (value) => {
                 console.log("Date validation: ", value)
-                return false
+                return undefined
               },
             }}
           />
@@ -60,16 +62,17 @@ export function EventForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
         </Grid.Col>
 
         <Grid.Col xs={12} md={3}>
-          <InputWrapper label={"Visibility"} required>
-            <Chips mt={"4px"}>
-              <Chip value="react">Public</Chip>
-              <Chip value="ng">Private</Chip>
-            </Chips>
-          </InputWrapper>
+          <LabeledInput
+            name={"visibility"}
+            label={"Visibility"}
+            InputComponent={({ ...props }) => (
+              <EnumInput {...props} enumeration={EventVisibility} />
+            )}
+          />
         </Grid.Col>
 
         <Grid.Col span={12}>
-          <MapInput placeholder={"Where's the event?"} name={"location"} label={"Location"} />
+          <MapInput name={"location"} placeholder={"Where's the event?"} label={"Location"} />
         </Grid.Col>
       </Grid>
     </Form>

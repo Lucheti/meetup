@@ -46,7 +46,7 @@ export function UserDetail({ userId, showFollow = false }: UserDetailProps) {
   }
 
   return (
-    <Card withBorder p="xl" radius="md" className={classes.card}>
+    <Card withBorder p="xl" radius="md">
       <Card.Section className={cx(classes.bg, classes[user.sex])} sx={{ height: 100 }} />
       <Avatar
         src={user?.images?.url_small || undefined}
@@ -57,7 +57,7 @@ export function UserDetail({ userId, showFollow = false }: UserDetailProps) {
         className={classes.avatar}
       />
       <Text align="center" size="lg" weight={500} mt="sm">
-        {user?.name}
+        @{user?.username}
       </Text>
       <Text align="center" size="sm" color="dimmed">
         {user?.email}

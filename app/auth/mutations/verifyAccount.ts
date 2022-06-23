@@ -17,6 +17,7 @@ export default resolver.pipe(resolver.authorize(), async (_, ctx) => {
     role: user.role as Role,
     verified: user.emailVerified,
     images: user.images,
+    username: user.username,
   })
   return user
 })

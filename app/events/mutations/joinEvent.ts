@@ -12,8 +12,13 @@ export default resolver.pipe(resolver.zod(JoinEvent), resolver.authorize(), asyn
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
   const userId = ctx.session.userId
 
-  const event = await db.event.findFirst({ where: { id } })
+  const event = await db.event.findFirst({ where: { id }, include: { participants: true } })
   const isPastEvent = dayjs(event?.date).isBefore(new Date())
+  const userAlreadyJoined = event?.participants.some((participant) => participant.id === userId)
+
+  if (userAlreadyJoined) {
+    throw new Error("You already joined this event")
+  }
 
   if (isPastEvent) {
     throw new PastEventError()

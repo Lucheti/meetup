@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useEffect } from "react"
 import { Head, Link, useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getEvent from "app/events/queries/getEvent"
@@ -6,10 +6,13 @@ import updateEvent from "app/events/mutations/updateEvent"
 import { EventForm, FORM_ERROR } from "app/events/components/EventForm"
 import dayjs from "dayjs"
 import { Container } from "@mantine/core"
+import { showNotification } from "@mantine/notifications"
+import { useCurrentUser } from "../../../../core/hooks/useCurrentUser"
 
 export const EditEvent = () => {
   const router = useRouter()
   const eventId = useParam("eventId", "string")
+  const user = useCurrentUser()
   const [event, { setQueryData }] = useQuery(
     getEvent,
     { id: eventId },
@@ -25,7 +28,17 @@ export const EditEvent = () => {
     date: event.date,
     time: event.date,
     location: event?.location?.alias,
+    coords: {
+      lat: event?.location?.latitude,
+      lng: event?.location?.longitude,
+    },
   }
+
+  useEffect(() => {
+    if (event && user && event?.owner?.id !== user?.id) {
+      router.push(Routes.Home())
+    }
+  }, [event, user])
 
   return (
     <>
@@ -41,19 +54,31 @@ export const EditEvent = () => {
           //         then import and use it here
           // schema={UpdateEvent}
           initialValues={eventFormValues}
-          onSubmit={async (values) => {
+          onSubmit={async ({ date, time, location, coords, ...values }) => {
+            const combinedDate = dayjs(date)
+              .set("hour", time.getHours())
+              .set("minute", time.getMinutes())
+              .toDate()
             try {
               const updated = await updateEventMutation({
                 id: event.id,
                 ...values,
+                location: {
+                  ...coords,
+                  alias: location,
+                },
+                date: combinedDate,
               })
+              console.log("UPDATED: ", updated)
               await setQueryData(updated)
               router.push(Routes.ShowEventPage({ eventId: updated.id }))
             } catch (error: any) {
               console.error(error)
-              return {
-                [FORM_ERROR]: error.toString(),
-              }
+              showNotification({
+                title: "Error updating event",
+                message: error.message,
+                color: "red",
+              })
             }
           }}
         />
@@ -63,20 +88,10 @@ export const EditEvent = () => {
 }
 
 const EditEventPage: BlitzPage = () => {
-  const userId = useParam("userId", "number")
-
   return (
-    <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <EditEvent />
-      </Suspense>
-
-      <p>
-        <Link href={Routes.EventsPage({ userId: userId! })}>
-          <a>Events</a>
-        </Link>
-      </p>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <EditEvent />
+    </Suspense>
   )
 }
 

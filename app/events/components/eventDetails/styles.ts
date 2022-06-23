@@ -9,5 +9,11 @@ export const eventDetailStyles = createStyles((theme) => ({
   },
   bg: {
     backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[4],
+    position: "relative",
+  },
+  icon: {
+    position: "absolute",
+    zIndex: 1,
+    cursor: "pointer",
   },
 }))

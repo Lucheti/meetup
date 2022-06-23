@@ -17,8 +17,9 @@ export const LoginForm = (props: LoginFormProps) => {
     <Form
       submitText="Login"
       schema={Login}
-      initialValues={{ email: "", password: "" }}
+      initialValues={{ identifier: "", password: "" }}
       onSubmit={async (values) => {
+        console.log(values)
         try {
           const user = await loginMutation(values)
           props.onSuccess?.(user)
@@ -34,7 +35,12 @@ export const LoginForm = (props: LoginFormProps) => {
         }
       }}
     >
-      <LabeledInput name="email" label="Email" placeholder="Email" required />
+      <LabeledInput
+        name="identifier"
+        label="Email or username"
+        placeholder="Email or username"
+        required
+      />
       <LabeledInput
         name="password"
         label="Password"

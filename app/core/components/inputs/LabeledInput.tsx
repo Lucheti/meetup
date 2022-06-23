@@ -2,8 +2,10 @@ import React, { forwardRef, ComponentPropsWithoutRef, PropsWithoutRef } from "re
 import { useField, UseFieldConfig } from "react-final-form"
 import { Input, InputWrapper, Tooltip } from "@mantine/core"
 import { AlertCircle } from "tabler-icons-react"
+import { useMutation } from "blitz"
+import isUniqueUser from "../../../users/mutations/isUniqueUser"
 
-export interface LabeledTextFieldProps {
+export interface LabeledInputProps {
   /** Field name. */
   name: string
   /** Field label. */
@@ -20,7 +22,7 @@ export interface LabeledTextFieldProps {
   InputComponent?: React.FC
 }
 
-export const LabeledInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
+export const LabeledInput = forwardRef<HTMLInputElement, LabeledInputProps>(
   ({ InputComponent = Input, name, label, outerProps, fieldProps, labelProps, ...props }, ref) => {
     const {
       input: { type, ...input },
@@ -45,6 +47,7 @@ export const LabeledInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
       <div {...outerProps}>
         <InputWrapper required label={label} error={touched && normalizedError}>
           <InputComponent
+            invalid={error !== undefined}
             required
             type={props.type}
             {...input}

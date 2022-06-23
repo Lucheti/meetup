@@ -18,6 +18,7 @@ export default resolver.pipe(resolver.zod(GetUser), resolver.authorize(), async 
       emailVerified: true,
       images: true,
       sex: true,
+      username: true,
     },
   })
 })

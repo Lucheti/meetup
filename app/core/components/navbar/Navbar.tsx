@@ -1,17 +1,19 @@
 import React from "react"
 import { Burger, Button, Center, Container, Group, Header, Menu } from "@mantine/core"
 import { useBooleanToggle } from "@mantine/hooks"
-import { ChevronDown } from "tabler-icons-react"
+import { ChevronDown, ShoppingCart } from "tabler-icons-react"
 import { HEADER_HEIGHT, NavbarStyles } from "./styles"
-import { useRouter } from "blitz"
+import { Routes, useRouter } from "blitz"
 import { Logo } from "../logo/logo"
 import { useMenuItems } from "./menuItems"
+import { useCurrentUser } from "../../hooks/useCurrentUser"
 
 export function NavigationBar() {
   const { classes, cx } = NavbarStyles()
   const [opened, toggleOpened] = useBooleanToggle(false)
   const router = useRouter()
   const menuItems = useMenuItems()
+  const user = useCurrentUser()
 
   const items = menuItems.map((menuItem) => {
     const menuItems = menuItem.links?.map((item) => (
@@ -93,11 +95,24 @@ export function NavigationBar() {
           <Logo />
         </Group>
         <Group spacing={5} className={classes.links}>
-          {items}
+          {user && items}
         </Group>
-        <Button radius="xl" sx={{ height: 30 }}>
-          Get early access
-        </Button>
+        {!user && (
+          <Button radius="xl" sx={{ height: 30 }} onClick={() => router.push(Routes.LoginPage())}>
+            Login
+          </Button>
+        )}
+        {user && (
+          <Button
+            radius="xl"
+            color={"grape"}
+            sx={{ height: 30 }}
+            onClick={() => router.push(Routes.LoginPage())}
+            leftIcon={<ShoppingCart size={12} />}
+          >
+            Marketplace
+          </Button>
+        )}
       </Container>
     </Header>
   )

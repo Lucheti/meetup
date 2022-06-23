@@ -15,7 +15,6 @@ export default resolver.pipe(
           connect: { id: session.userId },
         },
         participants: { create: [] },
-        visibility: EventVisibility.Public,
         location: {
           create: {
             alias: location.alias,

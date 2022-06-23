@@ -12,7 +12,7 @@ export default resolver.pipe(
 
     where = where || {}
     const uiFilter = where.OR
-    const enforcedFilter = [
+    const enforcedFilter: Prisma.EventWhereInput[] = [
       { visibility: EventVisibility.Public },
       { participants: { some: { id: userId } } },
     ]

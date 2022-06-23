@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useState } from "react"
 import { Map, Overlay } from "pigeon-maps"
-import { LabeledTextFieldProps } from "./LabeledInput"
+import { LabeledInputProps } from "./LabeledInput"
 import { Avatar, createStyles, Input, InputWrapper, Paper, Space } from "@mantine/core"
 import { useField } from "react-final-form"
 import { Location as LocationIcon } from "tabler-icons-react"
@@ -31,7 +31,7 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-export const MapInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
+export const MapInput = forwardRef<HTMLInputElement, LabeledInputProps>(
   ({ name, label, outerProps, fieldProps, labelProps, ...props }, ref) => {
     const { classes } = useStyles()
     const user = useCurrentUser()
@@ -71,8 +71,6 @@ export const MapInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
 
     useEffect(() => {
       if (debouncedValue) {
-        console.log("debouncedValue", debouncedValue)
-        console.log("value", value)
         OpencageApi.getGeolocationFromLocation(debouncedValue).then(({ lat, lng }) => {
           setCenter([lat, lng])
           setMarker([lat, lng])
@@ -86,6 +84,7 @@ export const MapInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
         <div {...outerProps}>
           <InputWrapper required label={label} error={touched && normalizedError}>
             <Input
+              value={value || ""}
               icon={<LocationIcon size={16} />}
               type={props.type}
               {...input}
