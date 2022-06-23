@@ -13,10 +13,15 @@ test.skip("renders blitz documentation link", () => {
 
   // This is an example on how to mock api hooks when testing
   mockUseCurrentUser.mockReturnValue({
-    id: 1,
-    name: "User",
+    id: "1",
+    name: "user",
+    lastName: "user",
+    sex: "Other",
+    username: "user----",
     email: "user@email.com",
-    role: "user",
+    role: "USER",
+    images: null,
+    emailVerified: false,
   })
 
   const { getByText } = render(<Home />)
