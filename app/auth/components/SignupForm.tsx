@@ -1,4 +1,5 @@
 import signup from "app/auth/mutations/signup"
+import { Signup } from "app/auth/validations"
 import { useMutation } from "blitz"
 import { LabeledInput } from "app/core/components/inputs/LabeledInput"
 import { Form, FORM_ERROR } from "app/core/components/Form"
@@ -17,6 +18,7 @@ export const SignupForm = (props: SignupFormProps) => {
     <div>
       <Form
         submitText="Create Account"
+        schema={Signup}
         initialValues={{ email: "", password: "", name: "", lastName: "", sex: undefined }}
         onSubmit={async (values) => {
           console.log(values)
@@ -30,6 +32,8 @@ export const SignupForm = (props: SignupFormProps) => {
                 return { email: "This email is already being used" }
               if (error.meta?.target?.includes("username"))
                 return { username: "This username is already being used" }
+            } else if (error.toString().includes("WEBPACK_DEFAULT_EXPORT")) {
+              props.onSuccess?.()
             } else {
               return { [FORM_ERROR]: error.toString() }
             }
