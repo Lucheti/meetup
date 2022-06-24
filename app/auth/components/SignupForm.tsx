@@ -2,7 +2,6 @@ import signup from "app/auth/mutations/signup"
 import { useMutation } from "blitz"
 import { LabeledInput } from "app/core/components/inputs/LabeledInput"
 import { Form, FORM_ERROR } from "app/core/components/Form"
-import { Signup } from "app/auth/validations"
 import { Grid } from "@mantine/core"
 import { EnumInput } from "../../core/components/inputs/EnumInput"
 import { Sex } from "../../../db"
@@ -18,7 +17,6 @@ export const SignupForm = (props: SignupFormProps) => {
     <div>
       <Form
         submitText="Create Account"
-        schema={Signup}
         initialValues={{ email: "", password: "", name: "", lastName: "", sex: undefined }}
         onSubmit={async (values) => {
           console.log(values)
