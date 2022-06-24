@@ -15,5 +15,8 @@ const config: BlitzConfig = {
     return config
   },
   */
+  experimental: {
+    esmExternals: false,
+  },
 }
 module.exports = config

@@ -1,5 +1,5 @@
-import { resolver, SecurePassword, AuthenticationError } from "blitz"
 import db from "db"
+import { resolver, SecurePassword, AuthenticationError } from "blitz"
 import { Login } from "../validations"
 import { Role } from "types"
 
@@ -10,6 +10,7 @@ export const authenticateUser = async (rawIdentifier: string, rawPassword: strin
     include: { images: true },
   })
   if (!user) throw new AuthenticationError()
+  if (!user.emailVerified) throw new AuthenticationError()
 
   const result = await SecurePassword.verify(user.hashedPassword, password)
 
