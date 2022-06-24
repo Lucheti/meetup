@@ -32,8 +32,6 @@ export const SignupForm = (props: SignupFormProps) => {
                 return { email: "This email is already being used" }
               if (error.meta?.target?.includes("username"))
                 return { username: "This username is already being used" }
-            } else if (error.toString().includes("WEBPACK_DEFAULT_EXPORT")) {
-              props.onSuccess?.()
             } else {
               return { [FORM_ERROR]: error.toString() }
             }
