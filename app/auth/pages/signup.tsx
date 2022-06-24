@@ -1,9 +1,7 @@
-import { useRouter, BlitzPage, Routes } from "blitz"
-import Layout from "app/core/layouts/Layout"
+import React from "react"
+import { BlitzPage, Routes, useRouter } from "blitz"
 import { SignupForm } from "app/auth/components/SignupForm"
 import { Anchor, Center, Container, Paper, Text, Title } from "@mantine/core"
-import { LoginForm } from "../components/LoginForm"
-import React from "react"
 
 const SignupPage: BlitzPage = () => {
   const router = useRouter()

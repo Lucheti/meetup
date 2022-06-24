@@ -1,7 +1,7 @@
-import { resolver, SecurePassword } from "blitz"
 import db from "db"
-import { Signup } from "app/auth/validations"
 import emailQueue from "../../api/mailing/verify-email-queue"
+import { resolver, SecurePassword } from "blitz"
+import { Signup } from "app/auth/validations"
 
 export default resolver.pipe(
   resolver.zod(Signup),

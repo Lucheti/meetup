@@ -1,12 +1,11 @@
-import { useMutation, useQuery } from "blitz"
+import signup from "app/auth/mutations/signup"
+import { useMutation } from "blitz"
 import { LabeledInput } from "app/core/components/inputs/LabeledInput"
 import { Form, FORM_ERROR } from "app/core/components/Form"
-import signup from "app/auth/mutations/signup"
 import { Signup } from "app/auth/validations"
 import { Grid } from "@mantine/core"
 import { EnumInput } from "../../core/components/inputs/EnumInput"
 import { Sex } from "../../../db"
-import isUniqueUser from "../../users/mutations/isUniqueUser"
 
 type SignupFormProps = {
   onSuccess?: () => void
