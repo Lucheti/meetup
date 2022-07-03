@@ -10,8 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "prepare": "husky install",
-    "start:production": "blitz start --port $PORT",
-    "start:studio": "pm2 start \"prisma studio\" && caddy run"
+    "start:production": "blitz start --port $PORT"
   },
   "prisma": {
     "schema": "db/schema.prisma"
@@ -39,7 +38,6 @@
     "@mantine/spotlight": "4.2.9",
     "@prisma/client": "3.14.0",
     "blitz": "0.45.4",
-    "caddy-npm": "2.1.1",
     "dayjs": "1.11.3",
     "final-form": "4.20.7",
     "final-form-arrays": "3.0.2",
@@ -47,7 +45,6 @@
     "next-s3-upload": "0.2.2",
     "node-fetch": "3.2.5",
     "pigeon-maps": "0.21.0",
-    "pm2": "5.2.0",
     "prisma": "3.14.0",
     "quirrel": "1.9.0",
     "react": "18.0.0",
