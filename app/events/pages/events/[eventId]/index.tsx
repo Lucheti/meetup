@@ -2,11 +2,11 @@ import React from "react"
 import { BlitzPage, useParam, useQuery } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getEvent from "app/events/queries/getEvent"
-import { Card, Container, Grid, Paper } from "@mantine/core"
-import { EventDetails } from "../../components/eventDetails/EventDetails"
-import { InvitationLink } from "../../components/invitationLink/InvitationLink"
-import { Location } from "../../components/location/Location"
-import { EventDetailsStats } from "../../components/eventDetails/eventDetailsStats/EventDetailsStats"
+import { Container, Grid } from "@mantine/core"
+import { EventDetails } from "../../../components/eventDetails/EventDetails"
+import { InvitationLink } from "../../../components/invitationLink/InvitationLink"
+import { Location } from "../../../components/location/Location"
+import { EventDetailsStats } from "../../../components/eventDetails/eventDetailsStats/EventDetailsStats"
 
 export const Event = () => {
   const eventId = useParam("eventId", "string")
@@ -26,6 +26,7 @@ export const Event = () => {
       <Grid.Col span={12}>
         <EventDetailsStats event={event} />
       </Grid.Col>
+      <pre>{JSON.stringify(event.paymentOptions, null, 2)}</pre>
     </Grid>
   )
 }

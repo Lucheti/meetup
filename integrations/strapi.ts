@@ -15,6 +15,8 @@ export class StrapiApi {
     return fetch(`${BASE_URL}/api/upload`, {
       method: "POST",
       body: form,
-    }).then((response) => response.json())
+    })
+      .then((response) => response.json())
+      .catch(console.log)
   }
 }

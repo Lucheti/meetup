@@ -1,6 +1,7 @@
 import { resolver } from "blitz"
 import db, { Sex } from "db"
 import { z } from "zod"
+import { Images } from "../../images/validations"
 
 const UpdateUser = z.object({
   name: z.string(),
@@ -8,6 +9,7 @@ const UpdateUser = z.object({
   sex: z.enum([Sex.Male, Sex.Female, Sex.Other]),
   email: z.string(),
   username: z.string(),
+  images: Images,
 })
 
 export default resolver.pipe(resolver.authorize(), resolver.zod(UpdateUser), async (data, ctx) => {
@@ -17,6 +19,14 @@ export default resolver.pipe(resolver.authorize(), resolver.zod(UpdateUser), asy
     where: {
       id: ctx.session.userId,
     },
-    data,
+    data: {
+      ...data,
+      images: {
+        upsert: {
+          create: data.images,
+          update: data.images,
+        },
+      },
+    },
   })
 })

@@ -1,15 +1,13 @@
-import React, { forwardRef, ComponentPropsWithoutRef, PropsWithoutRef } from "react"
+import React, { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
 import { useField, UseFieldConfig } from "react-final-form"
 import { Input, InputWrapper, Tooltip } from "@mantine/core"
 import { AlertCircle } from "tabler-icons-react"
-import { useMutation } from "blitz"
-import isUniqueUser from "../../../users/mutations/isUniqueUser"
 
 export interface LabeledInputProps {
   /** Field name. */
   name: string
   /** Field label. */
-  label: string
+  label?: string
   /** Field type. Doesn't include radio buttons and checkboxes */
   type?: "text" | "password" | "email" | "search" | "tel" | "url" | "number"
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
@@ -19,11 +17,15 @@ export interface LabeledInputProps {
   placeholder?: string
   required?: boolean
   icon?: React.ReactNode
+  invalid?: boolean
   InputComponent?: React.FC
 }
 
 export const LabeledInput = forwardRef<HTMLInputElement, LabeledInputProps>(
-  ({ InputComponent = Input, name, label, outerProps, fieldProps, labelProps, ...props }, ref) => {
+  (
+    { InputComponent = Input, name, required, label, outerProps, fieldProps, labelProps, ...props },
+    ref
+  ) => {
     const {
       input: { type, ...input },
       meta: { touched, error, submitError, submitting },
@@ -47,8 +49,8 @@ export const LabeledInput = forwardRef<HTMLInputElement, LabeledInputProps>(
       <div {...outerProps}>
         <InputWrapper required label={label} error={touched && normalizedError}>
           <InputComponent
-            invalid={error !== undefined}
-            required
+            invalid={touched && error !== undefined}
+            required={required}
             type={props.type}
             {...input}
             disabled={submitting}

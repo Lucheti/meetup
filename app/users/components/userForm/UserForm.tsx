@@ -10,6 +10,7 @@ import { showNotification } from "@mantine/notifications"
 import { invalidateQuery, useMutation } from "blitz"
 import getUser from "../../queries/getUser"
 import updateUserMutation from "../../mutations/updateUser"
+import { ImageInput } from "../../../core/components/inputs/ImageInput"
 
 export function UserForm({ user }: { user: any }) {
   const [updateUser] = useMutation(updateUserMutation)
@@ -18,11 +19,17 @@ export function UserForm({ user }: { user: any }) {
     <Form
       initialValues={user || {}}
       onSubmit={async (values) => {
-        await updateUser(values)
-        showNotification({
-          message: "User data updated!",
-        })
-        invalidateQuery(getUser)
+        try {
+          await updateUser(values)
+          showNotification({
+            message: "User data updated!",
+          })
+          invalidateQuery(getUser)
+        } catch (error) {
+          showNotification({
+            message: "Error updating user data. please contact support@meetup.com",
+          })
+        }
       }}
       submitText="Update data"
     >
@@ -76,7 +83,7 @@ export function UserForm({ user }: { user: any }) {
         </Grid.Col>
 
         <Grid.Col span={12}>
-          <UserImageUpload />
+          <ImageInput name={"images"} label={"Image"} />
         </Grid.Col>
       </Grid>
     </Form>

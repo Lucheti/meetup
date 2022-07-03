@@ -3,12 +3,15 @@ import { createStyles } from "@mantine/core"
 export const pictureUploadStyles = createStyles((theme) => ({
   wrapper: {
     position: "relative",
-    marginBottom: 30,
+    height: "100%",
   },
 
   dropzone: {
     borderWidth: 1,
     paddingBottom: 50,
+    backgroundSize: "cover",
+    height: "100%",
+    minHeight: 250,
   },
 
   icon: {

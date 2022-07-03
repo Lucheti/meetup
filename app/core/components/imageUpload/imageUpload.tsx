@@ -3,8 +3,6 @@ import { Group, MantineTheme, Text, useMantineTheme } from "@mantine/core"
 import { Dropzone, DropzoneStatus, MIME_TYPES } from "@mantine/dropzone"
 import { CloudUpload } from "tabler-icons-react"
 import { pictureUploadStyles } from "./styles"
-import { useMutation } from "blitz"
-import updateUserImageMutation from "../../../users/mutations/updateUserImage"
 
 function getActiveColor(status: DropzoneStatus, theme: MantineTheme) {
   return status.accepted
@@ -16,22 +14,29 @@ function getActiveColor(status: DropzoneStatus, theme: MantineTheme) {
     : theme.black
 }
 
-export function ImageUpload({ onUpload }: { onUpload: (files: File[]) => void }) {
+type ImageUploadParams = {
+  onUpload: (files: FormData) => void
+  imageUrl?: string
+}
+
+export function ImageUpload({ onUpload, imageUrl }: ImageUploadParams) {
   const theme = useMantineTheme()
   const { classes } = pictureUploadStyles()
-  const openRef = useRef<() => void>()
+  const openRef = useRef<() => void>(null)
   const [loading, setLoading] = React.useState(false)
 
   const upload = async (files: File[]) => {
     setLoading(true)
-    await onUpload(files)
+    const form = new FormData()
+    files.forEach((file) => form.append("files", file))
+    await onUpload(form)
     setLoading(false)
   }
 
   return (
     <div className={classes.wrapper}>
       <Dropzone
-        // @ts-ignore
+        style={imageUrl ? { backgroundImage: `url('${imageUrl}')` } : {}}
         openRef={openRef || undefined}
         onDrop={upload}
         className={classes.dropzone}
@@ -42,30 +47,32 @@ export function ImageUpload({ onUpload }: { onUpload: (files: File[]) => void })
         disabled={loading}
         multiple={false}
       >
-        {(status) => (
-          <div style={{ pointerEvents: "none" }}>
-            <Group position="center">
-              <CloudUpload size={50} color={getActiveColor(status, theme)} />
-            </Group>
-            <Text
-              align="center"
-              weight={700}
-              size="lg"
-              mt="xl"
-              sx={{ color: getActiveColor(status, theme) }}
-            >
-              {status.accepted
-                ? "Drop files here"
-                : status.rejected
-                ? "jpg file less than 30mb"
-                : "Upload picture"}
-            </Text>
-            <Text align="center" size="sm" mt="xs" color="dimmed">
-              Drag&apos;n&apos;drop files here to upload. We can accept only <i>.jpg</i> files that
-              are less than 30mb in size.
-            </Text>
-          </div>
-        )}
+        {(status) =>
+          !imageUrl && (
+            <div style={{ pointerEvents: "none" }}>
+              <Group position="center">
+                <CloudUpload size={50} color={getActiveColor(status, theme)} />
+              </Group>
+              <Text
+                align="center"
+                weight={700}
+                size="lg"
+                mt="xl"
+                sx={{ color: getActiveColor(status, theme) }}
+              >
+                {status.accepted
+                  ? "Drop files here"
+                  : status.rejected
+                  ? "jpg file less than 30mb"
+                  : "Upload picture"}
+              </Text>
+              <Text align="center" size="sm" mt="xs" color="dimmed">
+                Drag&apos;n&apos;drop files here to upload. We can accept only <i>.jpg</i> files
+                that are less than 30mb in size.
+              </Text>
+            </div>
+          )
+        }
       </Dropzone>
     </div>
   )

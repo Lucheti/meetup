@@ -1,19 +1,14 @@
-import { BlitzPage, usePaginatedQuery } from "blitz"
+import { BlitzPage } from "blitz"
 import Layout from "app/core/layouts/Layout"
-import getEvents from "../events/queries/getEvents"
-import { NavigationBar } from "../core/components/navbar/Navbar"
-import { Container, Grid, Space } from "@mantine/core"
+import { Container } from "@mantine/core"
 import { EmailBanner } from "../core/components/home/EmailBanner"
-import { TopEvents } from "../events/components/TopEvents"
 import React from "react"
-import { EventsList } from "../events/components/EventsList"
 import { HeroTitle } from "../home/components/HeroTitle"
 import { FeaturesGrid } from "../home/components/AppFeatures"
-// import { EventsList } from "../events/components/EventsList"
 
 const Home: BlitzPage = () => {
   return (
-    <Container size={"xl"}>
+    <Container fluid p={0}>
       <HeroTitle />
       <FeaturesGrid
         title={"Create events like never before"}

@@ -10,6 +10,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
 // --------------------------------------
 
 enum Sex {
@@ -42,9 +46,7 @@ model User {
   followers Follower[] @relation("followers")
   followees Follower[] @relation("followees")
 
-  images  Images? @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  imageId String? @unique
-
+  images    Images?
   providers Provider[]
 }
 
@@ -56,8 +58,14 @@ model Images {
   url_large  String
 
 
-  user  User?
-  event Event?
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  eventId String? @unique
+  event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  providerId String?   @unique
+  provider   Provider? @relation(fields: [providerId], references: [id], onDelete: Cascade)
 }
 
 model Follower {
@@ -136,8 +144,22 @@ model Event {
 
   location Location?
 
-  images  Images? @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  imageId String? @unique
+  images Images?
+
+  paymentOptions PaymentOption[]
+}
+
+model PaymentOption {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  price       Int
+  description String?
+
+  event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId String?
 }
 
 model Location {
@@ -159,11 +181,12 @@ model Provider {
   updatedAt DateTime @updatedAt
 
   name     String
-  url      String
   services Service[]
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+
+  images Images?
 }
 
 model Service {

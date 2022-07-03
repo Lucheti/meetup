@@ -1,11 +1,9 @@
 import React from "react"
-import { Event, User, Location } from "db"
-import { invalidateQuery, Routes, useMutation, useQuery, useRouter } from "blitz"
-import joinEventMutation from "../mutations/joinEvent"
+import { Event, Images, Location, User } from "db"
+import { Routes, useQuery, useRouter } from "blitz"
 import isParticipantQuery from "../queries/isParticipant"
-import { Clock, Location as LocationIcon, Minus } from "tabler-icons-react"
+import { Clock, Location as LocationIcon } from "tabler-icons-react"
 import {
-  ActionIcon,
   Anchor,
   Avatar,
   AvatarsGroup,
@@ -18,44 +16,21 @@ import {
   Space,
   Text,
 } from "@mantine/core"
-import { showNotification } from "@mantine/notifications"
-import leaveEventMutation from "../mutations/leaveEvent"
 import dayjs from "dayjs"
-import getEventsQuery from "../queries/getEvents"
-import getMyEvents from "../queries/getMyEvents"
 
 type EventCardProps = {
-  event: Event & { owner: User; participants: User[]; location: Location | null }
+  event: Event & {
+    owner: User
+    participants: User[]
+    location: Location | null
+    images: Images | null
+  }
 }
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const { classes, theme } = useStyles()
   const router = useRouter()
-  const [joinEvent, joinEventMeta] = useMutation(joinEventMutation, {
-    onSuccess: (data) => {
-      invalidateQuery(isParticipantQuery)
-      invalidateQuery(getEventsQuery)
-      invalidateQuery(getMyEvents)
-      showNotification({
-        title: `Joined event ${data.name}`,
-        message: `See you in ${daysLeft} days!`,
-      })
-    },
-  })
 
-  const [leaveEvent, leaveEventMeta] = useMutation(leaveEventMutation, {
-    onSuccess: (data) => {
-      invalidateQuery(isParticipantQuery)
-      invalidateQuery(getEventsQuery)
-      invalidateQuery(getMyEvents)
-      showNotification({
-        title: `Left event ${data.name}`,
-        message: "We had to let you go",
-      })
-    },
-  })
-
-  const [isParticipant, isParticipantMeta] = useQuery(isParticipantQuery, { id: event.id })
   const eventDate = dayjs(event.date).format("DD/MM/YYYY")
   const eventTime = dayjs(event.date).format("HH:MM")
   const daysLeft = dayjs(event?.date).diff(dayjs(Date.now()), "day")
@@ -73,14 +48,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   return (
     <Card withBorder radius="xl" p="md" shadow={"sm"}>
       <Card.Section p={"lg"}>
-        <Image
-          radius={"lg"}
-          src={
-            "https://as2.ftcdn.net/v2/jpg/02/73/83/77/1000_F_273837724_rxwt9AmHNV2zout4XYiyL0Q5jQwgG9tx.jpg"
-          }
-          alt={event.name}
-          height={180}
-        />
+        <Image radius={"lg"} src={event?.images?.url_medium} alt={event.name} height={180} />
       </Card.Section>
 
       <Group spacing="sm" mt={"sm"} position={"apart"} noWrap>
@@ -162,23 +130,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <Button
           radius="lg"
           style={{ flex: 1 }}
-          onClick={() => joinEvent({ id: event.id })}
-          loading={joinEventMeta.isLoading || isParticipantMeta.isLoading}
-          disabled={isParticipant}
+          onClick={() => router.push(Routes.ShowEventPage({ eventId: event.id }))}
         >
-          {isParticipant ? "Joined" : "Join"}
+          See more
         </Button>
-        {isParticipant && (
-          <ActionIcon
-            variant="default"
-            radius="lg"
-            size={36}
-            loading={leaveEventMeta.isLoading || isParticipantMeta.isLoading}
-            onClick={() => leaveEvent({ id: event.id })}
-          >
-            <Minus size={18} className={classes.like} />
-          </ActionIcon>
-        )}
       </Group>
     </Card>
   )

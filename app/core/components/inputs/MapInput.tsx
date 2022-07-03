@@ -38,12 +38,12 @@ export const MapInput = forwardRef<HTMLInputElement, LabeledInputProps>(
     const {
       input: { type, value, ...input },
       meta: { touched, error, submitError, submitting },
-    } = useField(name, {
+    } = useField(`${name}.alias`, {
       ...fieldProps,
     })
     const {
       input: { onChange },
-    } = useField<Geolocation>("coords", {})
+    } = useField<Geolocation>(`${name}.coords`, {})
 
     const [debouncedValue] = useDebouncedValue(value, 1000)
     const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
@@ -71,10 +71,19 @@ export const MapInput = forwardRef<HTMLInputElement, LabeledInputProps>(
 
     useEffect(() => {
       if (debouncedValue) {
-        OpencageApi.getGeolocationFromLocation(debouncedValue).then(({ lat, lng }) => {
-          setCenter([lat, lng])
-          setMarker([lat, lng])
-          onChange({ lat, lng })
+        OpencageApi.getGeolocationFromLocation(debouncedValue).then((coords) => {
+          if (!coords) {
+            showNotification({
+              color: "red",
+              message: "Could not find location, please try again.",
+              autoClose: 5000,
+            })
+          } else {
+            const { lat, lng } = coords
+            setCenter([lat, lng])
+            setMarker([lat, lng])
+            onChange({ lat, lng })
+          }
         })
       }
     }, [debouncedValue])
@@ -85,6 +94,8 @@ export const MapInput = forwardRef<HTMLInputElement, LabeledInputProps>(
           <InputWrapper required label={label} error={touched && normalizedError}>
             <Input
               value={value || ""}
+              required
+              invalid={touched && error !== undefined}
               icon={<LocationIcon size={16} />}
               type={props.type}
               {...input}

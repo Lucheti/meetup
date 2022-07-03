@@ -1,13 +1,15 @@
 import { Suspense, useEffect } from "react"
-import { Head, Link, useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
+import { BlitzPage, Head, Routes, useMutation, useParam, useQuery, useRouter } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getEvent from "app/events/queries/getEvent"
 import updateEvent from "app/events/mutations/updateEvent"
-import { EventForm, FORM_ERROR } from "app/events/components/EventForm"
-import dayjs from "dayjs"
+import { EventForm } from "app/events/components/EventForm"
 import { Container } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useCurrentUser } from "../../../../core/hooks/useCurrentUser"
+import { UpdateEvent } from "../../../validations"
+import { createLoadingNotification } from "../../../../core/hooks/createLoadingNotification"
+import { CheckIcon } from "@modulz/radix-icons"
 
 export const EditEvent = () => {
   const router = useRouter()
@@ -22,12 +24,36 @@ export const EditEvent = () => {
     }
   )
   const [updateEventMutation] = useMutation(updateEvent)
+  const withLoadingNotification = createLoadingNotification({
+    loading: {
+      title: "Updating...",
+      message: "Updating your event",
+      loading: true,
+    },
+    success: {
+      message: "Event updated!",
+      loading: false,
+      icon: <CheckIcon />,
+      color: "teal",
+      autoClose: 5000,
+    },
+    error: {
+      title: "We have a problem",
+      message: "Something went wrong. Please try again.",
+    },
+  })
 
   const eventFormValues = {
     ...event,
     date: event.date,
     time: event.date,
-    location: event?.location?.alias,
+    location: {
+      alias: event?.location?.alias,
+      coords: {
+        lat: event?.location?.latitude,
+        lng: event?.location?.longitude,
+      },
+    },
     coords: {
       lat: event?.location?.latitude,
       lng: event?.location?.longitude,
@@ -52,26 +78,14 @@ export const EditEvent = () => {
           // TODO use a zod schema for form validation
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and
           //         then import and use it here
-          // schema={UpdateEvent}
+          schema={UpdateEvent}
+          // @ts-ignore
           initialValues={eventFormValues}
-          onSubmit={async ({ date, time, location, coords, ...values }) => {
-            const combinedDate = dayjs(date)
-              .set("hour", time.getHours())
-              .set("minute", time.getMinutes())
-              .toDate()
+          onSubmit={async (values) => {
             try {
-              const updated = await updateEventMutation({
-                id: event.id,
-                ...values,
-                location: {
-                  ...coords,
-                  alias: location,
-                },
-                date: combinedDate,
-              })
-              console.log("UPDATED: ", updated)
+              const updated = await withLoadingNotification(() => updateEventMutation(values))
               await setQueryData(updated)
-              router.push(Routes.ShowEventPage({ eventId: updated.id }))
+              await router.push(Routes.ShowEventPage({ eventId: updated.id }))
             } catch (error: any) {
               console.error(error)
               showNotification({

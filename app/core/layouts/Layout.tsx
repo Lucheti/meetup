@@ -22,7 +22,7 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
         <title>{title || "meetup"}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container fluid className={classes.container} p={0}>
+      <Container fluid className={classes.container}>
         <NavigationBar />
         {children}
         <AppFooter />

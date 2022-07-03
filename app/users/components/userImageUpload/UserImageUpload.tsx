@@ -8,14 +8,10 @@ import { ImageUpload } from "../../../core/components/imageUpload/imageUpload"
 export const UserImageUpload = () => {
   const [updateUserImage] = useMutation(updateUserImageMutation)
 
-  const onUpload = (files: File[]) => {
-    const form = new FormData()
-    files.forEach((file) => form.append("files", file))
-    console.log("uploading files", form)
-    StrapiApi.uploadImage(form)
+  const onUpload = (form: FormData) => {
+    return StrapiApi.uploadImage(form)
       .then(async (res) => {
         const data = res[0]!
-        console.log("data: ", res)
         await updateUserImage({
           images: {
             url_small: data.formats.small.url,
@@ -30,7 +26,6 @@ export const UserImageUpload = () => {
         })
       })
       .catch((err) => {
-        console.log("error uploading image", err)
         showNotification({
           title: `Error uploading image`,
           message: "Something went wrong 😢",

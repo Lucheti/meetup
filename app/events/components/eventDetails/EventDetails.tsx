@@ -26,7 +26,13 @@ export const EventDetails = ({ eventId }: { eventId: string | undefined }) => {
             <Edit size={16} />
           </ThemeIcon>
         )}
-        <Image width={200} height={200} src={""} alt="With default placeholder" withPlaceholder />
+        <Image
+          height={200}
+          src={event?.images?.url_medium}
+          alt="With default placeholder"
+          withPlaceholder
+          fit={"cover"}
+        />
       </Card.Section>
       <Text align="center" size="lg" weight={500} mt="xl">
         {event?.name}

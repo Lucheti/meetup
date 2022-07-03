@@ -39,6 +39,7 @@ export default resolver.pipe(
             owner: true,
             participants: true,
             location: true,
+            images: true,
           },
         }),
     })

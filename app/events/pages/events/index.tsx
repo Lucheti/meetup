@@ -1,7 +1,7 @@
 import React from "react"
-import { BlitzPage, useParam } from "blitz"
+import { BlitzPage } from "blitz"
 import Layout from "app/core/layouts/Layout"
-import { Container, createStyles, Grid, Paper, Space } from "@mantine/core"
+import { Container, Grid } from "@mantine/core"
 import { EventsList } from "../../components/EventsList"
 import { EventPageBanner } from "../../components/banners/EventPageBanner"
 

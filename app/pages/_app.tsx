@@ -26,6 +26,9 @@ export default function App({ Component, pageProps }: AppProps) {
       defaultProps={{
         Container: {
           sizes: {
+            xs: 300,
+            sm: 500,
+            md: 750,
             lg: 1000,
             xl: 1450,
           },

@@ -21,6 +21,8 @@ export default resolver.pipe(resolver.zod(GetEvent), resolver.authorize(), async
       },
       location: true,
       owner: true,
+      images: true,
+      paymentOptions: true,
     },
   })
 

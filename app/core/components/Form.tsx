@@ -3,6 +3,7 @@ import { Form as FinalForm, FormProps as FinalFormProps } from "react-final-form
 import { z } from "zod"
 import { validateZodSchema } from "blitz"
 import { Button } from "@mantine/core"
+import arrayMutators from "final-form-arrays"
 export { FORM_ERROR } from "final-form"
 
 export interface FormProps<S extends z.ZodType<any, any>>
@@ -14,6 +15,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   schema?: S
   onSubmit: FinalFormProps<z.infer<S>>["onSubmit"]
   initialValues?: FinalFormProps<z.infer<S>>["initialValues"]
+  loading?: boolean
 }
 
 export function Form<S extends z.ZodType<any, any>>({
@@ -22,6 +24,7 @@ export function Form<S extends z.ZodType<any, any>>({
   schema,
   initialValues,
   onSubmit,
+  loading,
   ...props
 }: FormProps<S>) {
   return (
@@ -29,6 +32,7 @@ export function Form<S extends z.ZodType<any, any>>({
       initialValues={initialValues}
       validate={validateZodSchema(schema)}
       onSubmit={onSubmit}
+      mutators={{ ...arrayMutators }}
       render={({ handleSubmit, submitting, submitError }) => (
         <form onSubmit={handleSubmit} className="form" {...props}>
           {/* Form fields supplied as children are rendered here */}
@@ -41,7 +45,7 @@ export function Form<S extends z.ZodType<any, any>>({
           )}
 
           {submitText && (
-            <Button type={"submit"} fullWidth mt="xl">
+            <Button type={"submit"} fullWidth mt="xl" loading={loading || submitting}>
               {submitText}
             </Button>
           )}
